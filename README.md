@@ -26,8 +26,10 @@ File -> Project Structure -> Module Settings -> Tab: Dependencies: Module SDK
 File -> Settings -> Compiler -> Java Compiler -> Target bytecode version
 
 **2- Ensure maven pom.xml runs without errors**
-**possible error**: Plugin 'org.springframework.boot:spring-boot-maven-plugin:' not found
-**fix:** navigate to "Build, Execution, Deployment > Build Tools > Maven", check the "Use plugin registry", and click "OK".
+**possible error:** 
+Plugin 'org.springframework.boot:spring-boot-maven-plugin:' not found
+**fix:** 
+navigate to "Build, Execution, Deployment > Build Tools > Maven", check the "Use plugin registry", and click "OK".
 Then, "File > Invalidate Caches / Restart" to reload Intelli J
 
 ### Secondly, run the project ###
