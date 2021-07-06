@@ -40,8 +40,8 @@ Then, "File > Invalidate Caches / Restart" to reload Intelli J
 - Structure of the dataset.
 - Summary for the dataset.
 - Companies sorted based on the number of jobs posted, 
-and a bar chart showing the 10 most demanding companies.
-- Jobs sorted by popularity, and a pie chart for the 10 most popular jobs.
+and a pie chart showing the 10 most demanding companies.
+- Jobs sorted by popularity, and a bar chart for the 10 most popular jobs.
 - Locations sorted by abundance of jobs, and a bar chart for the top 10 among them
 - Skills sorted by their frequency
 
