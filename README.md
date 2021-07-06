@@ -20,10 +20,10 @@ to be accessible as a webservice.
 # **Get Started** #
 ### Firstly, Ensure proper configurations: ###
 **1-Ensure you are using java 8 in all of the following places:**  
-File -> Project Structure -> Project Settings
-File -> Project Structure -> Module Settings -> Tab: Sources: Language Level
-File -> Project Structure -> Module Settings -> Tab: Dependencies: Module SDK
-File -> Settings -> Compiler -> Java Compiler -> Target bytecode version
+File -> Project Structure -> Project Settings  
+File -> Project Structure -> Module Settings -> Tab: Sources: Language Level  
+File -> Project Structure -> Module Settings -> Tab: Dependencies: Module SDK  
+File -> Settings -> Compiler -> Java Compiler -> Target bytecode version  
 
 **2- Ensure maven pom.xml runs without errors**  
 **possible error:**   
