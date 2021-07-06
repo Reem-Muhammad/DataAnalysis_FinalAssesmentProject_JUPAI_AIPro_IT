@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html xmlns="https://www.thymeleafe.org">
+<head>
+    <meta charset="ISO-8859-1">
+    <title>High Chart Example - Spring Boot</title>
+    <!--<link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">-->
+    <link rel="stylesheet"
+          href="https://code.highcharts.com/css/highcharts.css" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <script
+            src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <!--<script
+            src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>-->
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+</head>
+<body>
+<div class="container">
+    <div align="center" style="margin-bottom: 50px;">
+        <h2>Wuzzuf Jobs Analysis</h2>
+    </div>
+    <nav class="navbar navbar-light bg-light">
+        <form class="form-inline">
+            <button class="btn btn-outline-success" type="button" style="margin-right: 5px;margin-bottom:5px;" onclick="showData();">Display Some Data</button>
+            <button class="btn btn-outline-success" type="button" style="margin-right: 5px;margin-bottom:5px;" onclick="structure();">Display The Structure</button>
+            <button class="btn btn-outline-success" type="button" style="margin-right: 5px;margin-bottom:5px;" onclick="summary();">Display Summary</button>
+            <button class="btn btn-outline-success" type="button" style="margin-right: 5px;margin-bottom:5px;" onclick="popularJobCompanies();">Most Popular Companies</button>
+            <button class="btn btn-outline-success" type="button" style="margin-right: 5px;margin-bottom:5px;" onclick="popularJobTitles();">Most Popular Job Titles</button>
+            <button class="btn btn-outline-success" type="button" style="margin-right: 5px;margin-bottom:5px;" onclick="popularAreas();">Most Popular Areas</button>
+            <button class="btn btn-outline-success" type="button" style="margin-right: 5px;margin-bottom:5px;" onclick="skills();">Most Popular Skills</button>
+        </form>
+    </nav>
+    <div id="loading" class="row" style="margin-top:50px;display:none;">
+        <div class="col-md-12">
+            <div align="center">
+                <img src="../static/images/loading-buffering.gif" th:src="@{images/loading-buffering.gif}" alt="loading">
+                <h4>Loading...</h4>
+            </div>
+        </div>
+    </div>
+    <div id="data" class="row">
+        <div class="col-md-6">
+            <table id="datatable" class="table" style="display:none">
+                <thead id="datatable-head">
+
+                </thead>
+                <tbody id="datatable-body">
+                </tbody>
+            </table>
+        </div>
+        <div id="figure" class="col-md-6">
+            <figure class="highcharts-figure">
+                <div id="container"></div>
+            </figure>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+        function popularJobCompanies() {
+            $('#data').css('display', 'none');
+            $('#figure').css('display', 'none');
+            $('#loading').css('display', '');
+            $.ajax({
+                url : "/popular-jobcompanies",
+                success : function(result) {
+                    $('#loading').css('display', 'none');
+                    $('#data').css('display', '');
+                    $('#figure').css('display', '');
+                    var data = [];
+                    var v;
+                    var count = 0;
+                    Object.keys(result).forEach(
+                            function(key) {
+                                if(count == 10)
+                                    return;
+                                v  = {name: key, y: result[key]}
+                                data.push(v)
+                                count++;
+                            });
+                    drawPieChart(data);
+                    var column_names = '';
+                    column_names += '<th scope="col">#</th>';
+                    column_names += '<th scope="col">Company Name</th>';
+                    column_names += '<th scope="col">Number Of Jobs</th>';
+
+                    $('#datatable-head').html(column_names);
+
+                    var rows = "";
+                    var counter = 1;
+                    Object.keys(result).forEach(
+                            function(key) {
+                                rows += '<tr>';
+                                rows += '<th scope="row">' + counter + '</th>';
+                                rows += '<td>' + key + '</td>';
+                                rows += '<td>' + result[key] + '</td>';
+                                rows += '</tr>';
+                                counter++;
+                            });
+
+                    $('#datatable-body').html(rows);
+                    $('#datatable').css('display', '');
+                }
+            });
+        }
+
+        function skills() {
+            $('#data').css('display', 'none');
+            $('#figure').css('display', 'none');
+            $('#loading').css('display', '');
+            $.ajax({
+                url : "/popular-skills",
+                success : function(result) {
+                    $('#loading').css('display', 'none');
+                    $('#data').css('display', '');
+                    var data = [];
+                    var column_names = '';
+                    column_names += '<th scope="col">#</th>';
+                    column_names += '<th scope="col">Skill</th>';
+                    column_names += '<th scope="col">Number Of Occurrences</th>';
+
+                    $('#datatable-head').html(column_names);
+
+                    var rows = "";
+                    var counter = 1;
+                    Object.keys(result).forEach(
+                            function(key) {
+                                rows += '<tr>';
+                                rows += '<th scope="row">' + counter + '</th>';
+                                rows += '<td>' + key + '</td>';
+                                rows += '<td>' + result[key] + '</td>';
+                                rows += '</tr>';
+                                counter++;
+                            });
+
+                    $('#datatable-body').html(rows);
+                    $('#datatable').css('display', '');
+                }
+            });
+        }
+
+        function showData() {
+            $('#data').css('display', 'none');
+            $('#figure').css('display', 'none');
+            $('#loading').css('display', '');
+            $.ajax({
+                url : "/show-data",
+                success : function(result) {
+                    $('#loading').css('display', 'none');
+                    $('#data').css('display', '');
+                    console.log(result);
+                    var column_names = '';
+                    column_names += '<th scope="col">#</th>';
+                    for (var i = 0; i < result[i].length; i++) {
+                        column_names += '<th scope="col">' + result[0][i] + '</th>';
+                    }
+
+                    $('#datatable-head').html(column_names);
+
+                    var rows = "";
+                    for (var i = 1; i < result.length; i++) {
+                        rows += '<tr>';
+                        rows += '<th scope="col">' + i + '</th>';
+                        for (var j = 0; j < result[i].length; j++) {
+                            rows += '<td>' + result[i][j] + '</td>';
+                        }
+                        rows += '</tr>';
+                    }
+
+                    $('#datatable-body').html(rows);
+                    $('#datatable').css('display', '');
+                }
+            });
+        }
+
+        function popularJobTitles() {
+            $('#data').css('display', 'none');
+            $('#figure').css('display', 'none');
+            $('#loading').css('display', '');
+            $.ajax({
+                url : "/popular-jobtitles",
+                success : function(result) {
+                    $('#loading').css('display', 'none');
+                    $('#figure').css('display', '');
+                    $('#data').css('display', '');
+                    var keys = [];
+                    var values = [];
+                    var count = 0;
+                    Object.keys(result).forEach(
+                            function(key) {
+                                if(count == 10)
+                                    return;
+                                keys.push(key);
+                                values.push(result[key]);
+                                count++;
+                            });
+                    drawBarChart(keys, values, '10 Most Popular Jobs');
+                    var column_names = '';
+                    column_names += '<th scope="col">#</th>';
+                    column_names += '<th scope="col">Job Title</th>';
+                    column_names += '<th scope="col">Number of Occurrences</th>';
+
+                    $('#datatable-head').html(column_names);
+
+                    var rows = "";
+                    var counter = 1;
+                    Object.keys(result).forEach(
+                            function(key) {
+                                rows += '<tr>';
+                                rows += '<th scope="row">' + counter + '</th>';
+                                rows += '<td>' + key + '</td>';
+                                rows += '<td>' + result[key] + '</td>';
+                                rows += '</tr>';
+                                counter++;
+                            });
+
+                    $('#datatable-body').html(rows);
+                    $('#datatable').css('display', '');
+                }
+            });
+        }
+
+        function structure() {
+            $('#data').css('display', 'none');
+            $('#figure').css('display', 'none');
+            $('#loading').css('display', '');
+            $.ajax({
+                url : "/print-schema",
+                success : function(result) {
+                    $('#loading').css('display', 'none');
+                    $('#data').css('display', '');
+                    var keys = [];
+                    var values = [];
+                    var count = 0;
+                    Object.keys(result).forEach(
+                            function(key) {
+                                if(count == 10)
+                                    return;
+                                keys.push(key);
+                                values.push(result[key]);
+                                count++;
+                            });
+                    var column_names = '';
+                    column_names += '<th scope="col">#</th>';
+                    column_names += '<th scope="col">Column Name</th>';
+                    column_names += '<th scope="col">Data Type</th>';
+
+                    $('#datatable-head').html(column_names);
+
+                    var rows = "";
+                    var counter = 1;
+                    Object.keys(result).forEach(
+                            function(key) {
+                                rows += '<tr>';
+                                rows += '<th scope="row">' + counter + '</th>';
+                                rows += '<td>' + key + '</td>';
+                                rows += '<td>' + result[key] + '</td>';
+                                rows += '</tr>';
+                                counter++;
+                            });
+
+                    $('#datatable-body').html(rows);
+                    $('#datatable').css('display', '');
+                }
+            });
+        }
+
+        function summary() {
+            $('#data').css('display', 'none');
+            $('#figure').css('display', 'none');
+            $('#loading').css('display', '');
+            $.ajax({
+                url : "/print-summary",
+                success : function(result) {
+                    $('#loading').css('display', 'none');
+                    $('#data').css('display', '');
+                    var keys = [];
+                    var values = [];
+                    var count = 0;
+                    Object.keys(result).forEach(
+                            function(key) {
+                                if(count == 10)
+                                    return;
+                                keys.push(key);
+                                values.push(result[key]);
+                                count++;
+                            });
+                    var column_names = '';
+                    column_names += '<th scope="col">#</th>';
+                    column_names += '<th scope="col">Column Name</th>';
+                    column_names += '<th scope="col">Number of Unique Values</th>';
+
+                    $('#datatable-head').html(column_names);
+
+                    var rows = "";
+                    var counter = 1;
+                    Object.keys(result).forEach(
+                            function(key) {
+                                rows += '<tr>';
+                                rows += '<th scope="row">' + counter + '</th>';
+                                rows += '<td>' + key + '</td>';
+                                rows += '<td>' + result[key] + '</td>';
+                                rows += '</tr>';
+                                counter++;
+                            });
+
+                    $('#datatable-body').html(rows);
+                    $('#datatable').css('display', '');
+                }
+            });
+        }
+
+
+        function popularAreas() {
+            $('#data').css('display', 'none');
+            $('#figure').css('display', 'none');
+            $('#loading').css('display', '');
+            $.ajax({
+                url : "/popular-areas",
+                success : function(result) {
+                    $('#loading').css('display', 'none');
+                    $('#figure').css('display', '');
+                    $('#data').css('display', '');
+                    var keys = [];
+                    var values = [];
+                    var count = 0;
+                    Object.keys(result).forEach(
+                            function(key) {
+                                if(count == 10)
+                                    return;
+                                keys.push(key);
+                                values.push(result[key]);
+                                count++;
+                            });
+                    drawBarChart(keys, values, '10 Most Popular Areas');
+                    var column_names = '';
+                    column_names += '<th scope="col">#</th>';
+                    column_names += '<th scope="col">Location</th>';
+                    column_names += '<th scope="col">Number of Jobs</th>';
+
+                    $('#datatable-head').html(column_names);
+
+                    var rows = "";
+                    var counter = 1;
+                    Object.keys(result).forEach(
+                            function(key) {
+                                rows += '<tr>';
+                                rows += '<th scope="row">' + counter + '</th>';
+                                rows += '<td>' + key + '</td>';
+                                rows += '<td>' + result[key] + '</td>';
+                                rows += '</tr>';
+                                counter++;
+                            });
+
+                    $('#datatable-body').html(rows);
+                    $('#datatable').css('display', '');
+                }
+            });
+        }
+
+        function drawBarChart(keys, values, title) {
+            Highcharts.chart('container', {
+                chart: {
+                    type: 'bar'
+                },
+                title: {
+                        text: title
+                },
+                xAxis: {
+                    categories: keys,
+                    title: {
+                        text: null
+                    }
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: 'Number of Jobs',
+                        align: 'high'
+                    },
+                    labels: {
+                        overflow: 'justify'
+                    }
+                },
+                plotOptions: {
+                    bar: {
+                        dataLabels: {
+                            enabled: true
+                        }
+                    }
+                },
+                legend: {
+                    layout: 'vertical',
+                    align: 'right',
+                    verticalAlign: 'bottom',
+                    x: -40,
+                    y: 80,
+                    floating: true,
+                    borderWidth: 1,
+                    backgroundColor:
+                        Highcharts.defaultOptions.legend.backgroundColor || '#FFFFFF',
+                    shadow: true
+                },
+                credits: {
+                    enabled: false
+                },
+                series: [{
+                    name: 'Number of Jobs',
+                    data: values
+                }]
+            });
+        }
+
+        function drawPieChart(data) {
+
+            Highcharts.chart('container', {
+                chart: {
+                    plotBackgroundColor: null,
+                    plotBorderWidth: null,
+                    plotShadow: false,
+                    type: 'pie'
+                },
+                title: {
+                    text: 'Most 10 Demanding Companies For Jobs'
+                },
+                tooltip: {
+                    pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b><br>Value: <b>{point.y}</b>'
+                },
+                accessibility: {
+                    point: {
+                        valueSuffix: '%'
+                    }
+                },
+                plotOptions: {
+                    pie: {
+                        allowPointSelect: true,
+                        cursor: 'pointer',
+                        dataLabels: {
+                            enabled: true,
+                            format: '<b>{point.name}</b>: {point.percentage:.1f} %<br><b>Value</b>: <b>{point.y}</b>'
+                        }
+                    }
+                },
+                series: [{
+                    name: 'Jobs',
+                    colorByPoint: true,
+                    data: data
+                }]
+            });
+
+            /*Highcharts.chart('container-bar', {
+                chart : {
+                    type : 'pie',
+                    styledMode : true
+                },
+                title : {
+                    text : 'Popular Job Titles'
+                },
+                xAxis : [ {
+                    title : {
+                        text : 'Year'
+                    },
+                    categories : year
+                } ],
+                yAxis : [ {
+                    className : 'highcharts-color-0',
+                    title : {
+                        text : 'Page View Count'
+                    }
+                } ],
+                series : [ {
+                    data : viewCounts
+                } ]
+            });*/
+        }
+    </script>
+</body>
+</html>
