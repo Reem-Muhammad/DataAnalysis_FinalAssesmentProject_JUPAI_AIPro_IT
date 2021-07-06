@@ -19,23 +19,23 @@ to be accessible as a webservice.
 
 # **Get Started** #
 ### Firstly, Ensure proper configurations: ###
-**1-Ensure you are using java 8 in all of the following places:**
+**1-Ensure you are using java 8 in all of the following places:**  
 File -> Project Structure -> Project Settings
 File -> Project Structure -> Module Settings -> Tab: Sources: Language Level
 File -> Project Structure -> Module Settings -> Tab: Dependencies: Module SDK
 File -> Settings -> Compiler -> Java Compiler -> Target bytecode version
 
-**2- Ensure maven pom.xml runs without errors**
-**possible error:** 
-Plugin 'org.springframework.boot:spring-boot-maven-plugin:' not found
-**fix:** 
-navigate to "Build, Execution, Deployment > Build Tools > Maven", check the "Use plugin registry", and click "OK".
+**2- Ensure maven pom.xml runs without errors**  
+**possible error:**   
+Plugin 'org.springframework.boot:spring-boot-maven-plugin:' not found  
+**fix:**   
+navigate to "Build, Execution, Deployment > Build Tools > Maven", check the "Use plugin registry", and click "OK".  
 Then, "File > Invalidate Caches / Restart" to reload Intelli J
 
 ### Secondly, run the project ###
-**1-** Run the java project
-**2-** access the homepage through [localhost:8080](localhost:8080)
-**3-** Press a button to view related results
+**1-** Run the java project  
+**2-** access the homepage through [localhost:8080](localhost:8080)  
+**3-** Press a button to view related results  
 
 ### You can view: ###
 - Part of the dataset.
